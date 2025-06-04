@@ -8,11 +8,11 @@
 
 #define WIFI_SSID "Holy"
 #define WIFI_PASSWORD "CowCowCow"
-#define BROKER_IP "192.167.15.1"
-#define BROKER_PASSWORD ""
+#define BROKER_IP "192.168.137.1"
+#define BROKER_PASSWORD "senha123"
 #define TOPIC "escola/sala1/temperatura"
 
-#define INIT_AS_PUBLISHER 0
+#define INIT_AS_PUBLISHER 1
 #define USING_CRYPTOGRAPHY 0
 
 int main() 
@@ -27,7 +27,8 @@ int main()
     const char *mensagem = "26.5";
 #if USING_CRYPTOGRAPHY
     uint8_t criptografada[16];
-    xor_encrypt((uint8_t *)mensagem, criptografada, strlen(mensagem), 42);
+    xor_encrypt((uint8_t *)mensagem, criptografada, strlen(mensagem), 23);
+    mensagem = criptografada;
 #endif
 #endif
 

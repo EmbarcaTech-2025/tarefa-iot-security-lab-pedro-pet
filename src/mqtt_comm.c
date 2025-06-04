@@ -100,7 +100,7 @@ void mqtt_setup(const char *client_id, const char *broker_ip, const char *user, 
 
     mqtt_set_inpub_callback(client, mqtt_incoming_publish_cb, mqtt_incoming_data_cb, NULL);
 
-    mqtt_client_connect(client, &broker_addr, 1883, mqtt_connection_cb, NULL, &ci);
+    mqtt_client_connect(client, &broker_addr, 1884, mqtt_connection_cb, NULL, &ci);
 }
 
 void mqtt_comm_publish(const char *topic, const uint8_t *data, size_t len) 
