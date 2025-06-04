@@ -13,9 +13,9 @@
 #define BROKER_PASSWORD "senha123"
 #define TOPIC "escola/sala1/temperatura"
 
-#define INIT_AS_PUBLISHER 1
+#define INIT_AS_PUBLISHER 0
 #define USING_CRYPTOGRAPHY 0
-#define NO_REPLAY 1
+#define ADD_TIME 0
 
 int main() 
 {
@@ -43,7 +43,7 @@ int main()
     while (true) 
     {
 #if INIT_AS_PUBLISHER
-#if NO_REPLAY
+#if ADD_TIME
     sprintf(mensagem, "{\"valor\":26.5,\"ts\":%lu}", time(NULL));
 #endif
     mqtt_comm_publish( TOPIC , mensagem, strlen(mensagem));
