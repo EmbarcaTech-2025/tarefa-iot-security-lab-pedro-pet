@@ -5,6 +5,7 @@
 #include "include/wifi_conn.h"      // Funções personalizadas de conexão WiFi
 #include "include/mqtt_comm.h"      // Funções personalizadas para MQTT
 #include "include/xor_cipher.h"     // Funções de cifra XOR
+#include <time.h>                   // Funções para tempo
 
 #define WIFI_SSID "Holy"
 #define WIFI_PASSWORD "CowCowCow"
@@ -14,6 +15,7 @@
 
 #define INIT_AS_PUBLISHER 1
 #define USING_CRYPTOGRAPHY 0
+#define NO_REPLAY 1
 
 int main() 
 {
@@ -23,10 +25,12 @@ int main()
 
     mqtt_setup( "bitdog1", BROKER_IP , "aluno", BROKER_PASSWORD );
 
+
+
 #if INIT_AS_PUBLISHER
-    const char *mensagem = "26.5";
+    char mensagem[50] = "26.5";
 #if USING_CRYPTOGRAPHY
-    uint8_t criptografada[16];
+    uint8_t criptografada[50];
     xor_encrypt((uint8_t *)mensagem, criptografada, strlen(mensagem), 23);
     mensagem = criptografada;
 #endif
@@ -39,7 +43,10 @@ int main()
     while (true) 
     {
 #if INIT_AS_PUBLISHER
-        mqtt_comm_publish( TOPIC , mensagem, strlen(mensagem));
+#if NO_REPLAY
+    sprintf(mensagem, "{\"valor\":26.5,\"ts\":%lu}", time(NULL));
+#endif
+    mqtt_comm_publish( TOPIC , mensagem, strlen(mensagem));
 #endif
         sleep_ms(5000);
     }
