@@ -6,34 +6,40 @@
 #include "include/mqtt_comm.h"      // Funções personalizadas para MQTT
 #include "include/xor_cipher.h"     // Funções de cifra XOR
 
-int main() {
-    // Inicializa todas as interfaces de I/O padrão (USB serial, etc.)
+#define WIFI_SSID "Holy"
+#define WIFI_PASSWORD "CowCowCow"
+#define BROKER_IP "192.167.15.1"
+#define BROKER_PASSWORD ""
+#define TOPIC "escola/sala1/temperatura"
+
+#define INIT_AS_PUBLISHER 0
+#define USING_CRYPTOGRAPHY 0
+
+int main() 
+{
     stdio_init_all();
     
-    // Conecta à rede WiFi
-    // Parâmetros: Nome da rede (SSID) e senha
-    connect_to_wifi("SSID da rede", "Senha da rede");
+    connect_to_wifi( WIFI_SSID , WIFI_PASSWORD );
 
-    // Configura o cliente MQTT
-    // Parâmetros: ID do cliente, IP do broker, usuário, senha
-    mqtt_setup("bitdog1", "IP do broker", "aluno", "senha123");
+    mqtt_setup( "bitdog1", BROKER_IP , "aluno", BROKER_PASSWORD );
 
-    // Mensagem original a ser enviada
+#if INIT_AS_PUBLISHER
     const char *mensagem = "26.5";
-    // Buffer para mensagem criptografada (16 bytes)
+#if USING_CRYPTOGRAPHY
     uint8_t criptografada[16];
-    // Criptografa a mensagem usando XOR com chave 42
     xor_encrypt((uint8_t *)mensagem, criptografada, strlen(mensagem), 42);
+#endif
+#endif
 
-    // Loop principal do programa
-    while (true) {
-        // Publica a mensagem original (não criptografada)
-        mqtt_comm_publish("escola/sala1/temperatura", mensagem, strlen(mensagem));
-        
-        // Alternativa: Publica a mensagem criptografada (atualmente comentada)
-        // mqtt_comm_publish("escola/sala1/temperatura", criptografada, strlen(mensagem));
-        
-        // Aguarda 5 segundos antes da próxima publicação
+#if !INIT_AS_PUBLISHER
+    mqtt_comm_subscribe( TOPIC );
+#endif
+
+    while (true) 
+    {
+#if INIT_AS_PUBLISHER
+        mqtt_comm_publish( TOPIC , mensagem, strlen(mensagem));
+#endif
         sleep_ms(5000);
     }
     return 0;
